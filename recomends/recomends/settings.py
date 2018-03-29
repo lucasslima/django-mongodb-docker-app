@@ -25,13 +25,13 @@ SECRET_KEY = '-=suds#n%cqp94f5)ri(_wg$rf*t67%0_eab)zxpb37h7(%q=c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'sugestions.apps.PollsConfig',
+    'sugestions.apps.SugestionsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -73,12 +73,13 @@ WSGI_APPLICATION = 'recomends.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
+db_host = os.environ.get('DB_HOST','mongo1')
+db_port = os.environ.get('DB_PORT', 27017)
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'djongo',
+        'HOST': db_host,
+        'PORT': db_port,
         'NAME': 'recomends'
     }
 }

@@ -1,10 +1,8 @@
-
 from djongo import models
 from django.forms import ModelForm
-#from djongo.models import forms
+
 
 # Create your models here.
-
 class Sugestion(models.Model):
     name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200)

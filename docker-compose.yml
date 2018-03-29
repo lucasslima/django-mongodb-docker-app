@@ -1,18 +1,30 @@
 version: "3.5"
 services:
+  app:
+    build: recomends/
+    #command: python3 manage.py runserver 0.0.0.0:8000
+    command: sh init.sh
+    volumes:
+      - ./recomends:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - replSetInitiate
+    networks:
+      - app-network
   mongo1:
-    image: mongo:3.4
+    image: mongo:3.6
     #volumes:
     #  - ./p:/data
-    env_file:
-      - ./mongo-repl.env
+    #env_file:
+      #k- ./mongo-repl.env
     ports:
       - "27017:27017"
-    command: mongod  --replSet apprepl 
+    command: mongod  --replSet apprepl
     networks:
       - app-network
   mongo2:
-    image: mongo:3.4
+    image: mongo:3.6
     #volumes:
     #  - ./s1:/data
     ports:
@@ -21,12 +33,25 @@ services:
     networks:
       - app-network
   mongo3:
-    image: mongo:3.4
+    image: mongo:3.6
     #volumes:
     #  - ./s2:/data
     ports:
       - "27019:27017"
     command: mongod  --replSet apprepl
+    networks:
+      - app-network
+  replSetInitiate:
+    image: mongo:3.6
+    env_file:
+      - ./mongo-repl.env
+    volumes:
+      - .:/scripts
+    command: sh scripts/mongo-repl.env
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
     networks:
       - app-network
   postgres-server:
@@ -37,11 +62,6 @@ services:
       - .env_db_pgsql
     networks:
       - app-network
-    #environment:
-    #  - POSTGRES_DB=zabbix
-    #  - POSTGRES_USER=zabbix
-    #  - POSTGRES_PASS=simplepasswd
-    #  #- POSTGRES_ROOT_PASSWORD=simplepasswd
   zabbix-server:
     image: zabbix/zabbix-server-pgsql:alpine-3.4-latest
     ports:
@@ -85,21 +105,9 @@ services:
       start_period: 30s
     networks:
       app-network:
-        #aliases:
-        #  - zabbix-web-nginx-pgsql
-        #  - zabbix-web-nginx-alpine-pgsql
-        #  - zabbix-web-nginx-pgsql-alpine
-      #zbx_net_frontend:
     stop_grace_period: 10s
     sysctls:
       - net.core.somaxconn=65535
-    labels:
-      com.zabbix.description: "Zabbix frontend on Nginx web-server with PostgreSQL database support"
-      com.zabbix.company: "Zabbix SIA"
-      com.zabbix.component: "zabbix-frontend"
-      com.zabbix.webserver: "nginx"
-      com.zabbix.dbtype: "pgsql"
-      com.zabbix.os: "alpine"
 networks:
   app-network:
     driver: bridge

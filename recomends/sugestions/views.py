@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import Sugestion,SugestionForm
 
-def contact(request):
+def sugestions(request):
     if request.method == 'GET':
         form = SugestionForm()
     else:
@@ -13,8 +13,8 @@ def contact(request):
             from_email = form.cleaned_data['email']
             message = form.cleaned_data['message']
             form.save()
-            return redirect('/sugestions/success')
-    return render(request, "sugestions/contact.html", {'form': form})
+            return redirect('success/')
+    return render(request, "sugestions.html", {'form': form})
 
 def successView(request):
     return HttpResponse('Success! Thank you for your message.')
