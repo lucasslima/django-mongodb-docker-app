@@ -73,12 +73,13 @@ WSGI_APPLICATION = 'recomends.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-db_host = os.environ.get('DB_HOST','mongo1')
+#db_host = os.environ.get('DB_HOST','mongo1;mongo2;mongo3')
+db_hosts = os.environ.get("DB_HOSTS").split(";")
 db_port = os.environ.get('DB_PORT', 27017)
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'HOST': db_host,
+        'HOST': db_hosts,
         'PORT': db_port,
         'NAME': 'recomends'
     }

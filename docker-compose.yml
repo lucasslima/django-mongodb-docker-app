@@ -6,6 +6,8 @@ services:
     command: sh init.sh
     volumes:
       - ./recomends:/code
+    environment:
+      - DB_HOSTS=mongo1;mongo2;mongo3
     ports:
       - "8000:8000"
     depends_on:
@@ -13,7 +15,7 @@ services:
     networks:
       - app-network
   mongo1:
-    image: mongo:3.6
+    image: mongo:3.4
     #volumes:
     #  - ./p:/data
     #env_file:
@@ -24,7 +26,7 @@ services:
     networks:
       - app-network
   mongo2:
-    image: mongo:3.6
+    image: mongo:3.4
     #volumes:
     #  - ./s1:/data
     ports:
@@ -33,7 +35,7 @@ services:
     networks:
       - app-network
   mongo3:
-    image: mongo:3.6
+    image: mongo:3.4
     #volumes:
     #  - ./s2:/data
     ports:
@@ -42,7 +44,7 @@ services:
     networks:
       - app-network
   replSetInitiate:
-    image: mongo:3.6
+    image: mongo:3.4
     env_file:
       - ./mongo-repl.env
     volumes:
@@ -62,6 +64,7 @@ services:
       - .env_db_pgsql
     networks:
       - app-network
+
   zabbix-server:
     image: zabbix/zabbix-server-pgsql:alpine-3.4-latest
     ports:
@@ -77,6 +80,37 @@ services:
       - postgres-server
     env_file:
       - .env_db_pgsql
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent:alpine-3.4-latest
+    ports:
+     - "10050:10050"
+    volumes:
+     - /etc/localtime:/etc/localtime:ro
+     - /etc/timezone:/etc/timezone:ro
+     - ./zbx_env/etc/zabbix/zabbix_agentd.d:/etc/zabbix/zabbix_agentd.d:ro
+     - ./zbx_env/var/lib/zabbix/modules:/var/lib/zabbix/modules:ro
+     - ./zbx_env/var/lib/zabbix/enc:/var/lib/zabbix/enc:ro
+     - ./zbx_env/var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+    links:
+     - zabbix-server:zabbix-server
+    deploy:
+     resources:
+      limits:
+        cpus: '0.2'
+        memory: 128M
+      reservations:
+        cpus: '0.1'
+        memory: 64M
+     mode: global
+    #env_file:
+    # - .env_agent
+    user: root
+    privileged: true
+    pid: "host"
+    networks:
+      app-network:
+    stop_grace_period: 5s
 
   zabbix-web-nginx-pgsql:
     image: zabbix/zabbix-web-nginx-pgsql:alpine-3.4-latest
