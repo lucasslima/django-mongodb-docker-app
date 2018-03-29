@@ -88,15 +88,6 @@ services:
      - ./zbx_env/var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
     links:
      - zabbix-server:zabbix-server
-    deploy:
-     resources:
-      limits:
-        cpus: '0.2'
-        memory: 128M
-      reservations:
-        cpus: '0.1'
-        memory: 64M
-     mode: global
     #env_file:
     # - .env_agent
     user: root
