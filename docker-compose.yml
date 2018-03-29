@@ -1,4 +1,4 @@
-version: "3.5"
+version: "2"
 services:
   app:
     build: recomends/
@@ -116,17 +116,17 @@ services:
     depends_on:
       - postgres-server
       - zabbix-server
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
+    #healthcheck:
+    #  test: ["CMD", "curl", "-f", "http://localhost"]
+    #  interval: 10s
+    #  timeout: 5s
+    #  retries: 3
+    #  start_period: 30s
     networks:
       app-network:
     stop_grace_period: 10s
-    sysctls:
-      - net.core.somaxconn=65535
+    #sysctls:
+    #  - net.core.somaxconn=65535
 networks:
   app-network:
     driver: bridge
