@@ -4,8 +4,18 @@
 Este é um simples projeto demonstrando com utilizar Docker, Django e Mongodb para
 a criação de uma aplicação simples que recebe sugestões de usuários.
 
-A aplicação pode ser instanciada utilizando o `docker-compose`, (testado com a versão
-1.20.0, Linux). Os seguintes containers compõe a aplicação:
+A aplicação pode ser instanciada utilizando (testado com a versão
+1.20.0, Linux):
+
+```
+docker-compose up
+```
+Caso sua versão do docker compose seja mais antiga, é ncessário especificar que os Dockerfiles sejam construídos:
+```
+docker-compose up --build
+```
+
+Os seguintes containers compõe a aplicação:
 * 3 containers Mongodb(`mongo1`, `mongo2`, `mongo3`). Devido ao descontínuo do campo
 `deploy` no `docker-compose`, três instâncias separadas são utilizadas para
 prover alta-disponibilidade através de um ReplicaSet.
@@ -31,4 +41,4 @@ Alguns detalhes sobre a configuração utilizada:
   - `zabbix-agent`
   - `zabbix-web-nginx-pgsql`
 
-E está é a configuração da aplicação. 
+E está é a configuração da aplicação.
