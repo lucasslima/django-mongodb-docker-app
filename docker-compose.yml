@@ -64,8 +64,8 @@ services:
     ports:
       - "9090:80"
       - "10051:10051"
-    #volumes:
-      #- /etc/localtime:/etc/localtime:ro
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
       #links:
       #li- zabbix-db:zabbix.db
     networks:
@@ -88,14 +88,11 @@ services:
      - ./zbx_env/var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
     links:
      - zabbix-server:zabbix-server
-    #env_file:
-    # - .env_agent
     user: root
     privileged: true
     pid: "host"
     networks:
       app-network:
-    #stop_grace_period: 5s
 
   zabbix-web-nginx-pgsql:
     image: zabbix/zabbix-web-nginx-pgsql:alpine-3.4-latest
@@ -116,17 +113,8 @@ services:
     depends_on:
       - postgres-server
       - zabbix-server
-    #healthcheck:
-    #  test: ["CMD", "curl", "-f", "http://localhost"]
-    #  interval: 10s
-    #  timeout: 5s
-    #  retries: 3
-    #  start_period: 30s
     networks:
       app-network:
-    #stop_grace_period: 10s
-    #sysctls:
-    #  - net.core.somaxconn=65535
 networks:
   app-network:
     driver: bridge
